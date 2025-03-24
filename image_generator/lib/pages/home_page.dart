@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/token_display.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,6 +13,7 @@ class _HomePageState extends State<HomePage> {
   String? _selectedStyle;
   String? _selectedImage;
   bool _isGenerating = false;
+  final int _tokenCount = 125; // Example token count
 
   final List<ImageStyle> _styles = [
     ImageStyle(name: 'Realistic', icon: Icons.photo_camera),
@@ -50,17 +52,63 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _showTokenInfo() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Your Tokens'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.monetization_on_rounded,
+              size: 48,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '$_tokenCount tokens',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Use tokens to generate images and videos. Get more tokens by purchasing or completing tasks.',
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+          FilledButton(
+            onPressed: () {
+              // TODO: Implement get more tokens
+              Navigator.pop(context);
+            },
+            child: const Text('Get More'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('AI Image Generator'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.history),
-            onPressed: () {
-              // TODO: Implement history view
-            },
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: TokenDisplay(
+              tokenCount: _tokenCount,
+              onTap: _showTokenInfo,
+            ),
           ),
           IconButton(
             icon: const Icon(Icons.settings),
